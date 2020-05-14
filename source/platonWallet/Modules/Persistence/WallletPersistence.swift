@@ -19,7 +19,6 @@ class WallletPersistence {
         RealmWriteQueue.async {
             autoreleasepool(invoking: {
                 let realm = try! Realm(configuration: RealmHelper.getConfig())
-                wallet.chainId = SettingService.shareInstance.currentNodeChainId
                 try? realm.write {
                     realm.add(wallet, update: .all)
                 }

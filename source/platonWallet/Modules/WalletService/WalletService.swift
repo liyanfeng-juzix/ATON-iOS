@@ -387,7 +387,7 @@ public final class WalletService {
 
         AssetService.sharedInstace.balances = AssetService.sharedInstace.balances.filter { $0.addr.lowercased() != wallet.address.lowercased() }
 
-        wallets.removeAll(where: { $0.uuid == wallet.uuid && $0.chainId == wallet.chainId })
+        wallets.removeAll(where: { $0.uuid == wallet.uuid})
 
         AssetVCSharedData.sharedData.willDeleteWallet(object: wallet as AnyObject)
 
@@ -427,10 +427,8 @@ public final class WalletService {
     }
 
     private func saveObservedWalletToDB(wallet: Wallet) throws {
-        wallet.chainId = SettingService.shareInstance.currentNodeChainId
-
         let sameUuidWallet = wallets.first { (item) -> Bool in
-            item.uuid == wallet.uuid && item.chainId == wallet.chainId
+            item.uuid == wallet.uuid
         }
 
         if sameUuidWallet != nil {
@@ -440,7 +438,7 @@ public final class WalletService {
         WallletPersistence.sharedInstance.save(wallet: wallet)
 
         wallets.removeAll { (item) -> Bool in
-            item.uuid == wallet.uuid && item.chainId == wallet.chainId
+            item.uuid == wallet.uuid
         }
 
         wallets.append(wallet)
@@ -452,9 +450,8 @@ public final class WalletService {
             throw Error.invalidWallet
         }
 
-        wallet.chainId = SettingService.shareInstance.currentNodeChainId
         let sameUuidWallet = wallets.first { (item) -> Bool in
-            (item.uuid == wallet.uuid && item.chainId == wallet.chainId) || (item.address.lowercased() == wallet.address.lowercased() && item.chainId == wallet.chainId)
+            (item.uuid == wallet.uuid) || (item.address.lowercased() == wallet.address.lowercased())
         }
 
         if sameUuidWallet != nil {
@@ -491,7 +488,7 @@ public final class WalletService {
         WallletPersistence.sharedInstance.save(wallet: wallet)
 
         wallets.removeAll { (item) -> Bool in
-            item.uuid == wallet.uuid && item.chainId == wallet.chainId
+            item.uuid == wallet.uuid
         }
 
         wallets.append(wallet)

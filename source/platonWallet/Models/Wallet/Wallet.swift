@@ -48,8 +48,6 @@ public final class Wallet: Object {
 
     @objc dynamic var avatar: String = ""
 
-    @objc dynamic var chainId: String = ""
-
     @objc dynamic var userArrangementIndex = -1
 
     @objc dynamic var balance: String = ""
@@ -121,10 +119,9 @@ public final class Wallet: Object {
 
         self.init()
         uuid = keystoreObject.address
-        primaryKeyIdentifier = keystoreObject.address + SettingService.shareInstance.currentNodeChainId
+        primaryKeyIdentifier = keystoreObject.address
         key = keystoreObject
         keystorePath = ""
-        chainId = SettingService.shareInstance.currentNodeChainId
         self.name = name
         self.avatar = keystoreObject.address.walletAddressLastCharacterAvatar()
     }
