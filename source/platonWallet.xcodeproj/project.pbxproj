@@ -1051,6 +1051,8 @@
 		9AF9AC222182E04000E97F07 /* PopupDialogContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF9AC122182E04000E97F07 /* PopupDialogContainerView.swift */; };
 		9AF9AC242182E19600E97F07 /* PAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF9AC232182E19600E97F07 /* PAlertController.swift */; };
 		B1DAED1D34810B2B9FF14A4A /* Pods_platonWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D427B78BFE8D21222DD020CB /* Pods_platonWallet.framework */; };
+		E80DD542246D699400C4E439 /* Keystore.Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B1445B4D9FFCDFA13E1BE3 /* Keystore.Address.swift */; };
+		E80DD543246D699500C4E439 /* Keystore.Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B1445B4D9FFCDFA13E1BE3 /* Keystore.Address.swift */; };
 		F4C14E17EDDB11FFD2934C8A /* Pods_platonWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B921C95E2605F8C1B9AA186 /* Pods_platonWalletUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -3393,6 +3395,7 @@
 				811886E223B7590C00CAE5BA /* QuickSaveAddressButton.swift in Sources */,
 				811886E323B7590C00CAE5BA /* AddAddressInfoView.swift in Sources */,
 				811886E423B7590C00CAE5BA /* StakingService.swift in Sources */,
+				E80DD543246D699500C4E439 /* Keystore.Address.swift in Sources */,
 				811886E523B7590C00CAE5BA /* UINavigationItem+Extensions.swift in Sources */,
 				811886E623B7590C00CAE5BA /* AlertStylePopViewController.swift in Sources */,
 				811886E723B7590C00CAE5BA /* RemoteConfig.swift in Sources */,
@@ -3684,6 +3687,7 @@
 				81B58A1A235DA1FC00816B4E /* QuickSaveAddressButton.swift in Sources */,
 				81DD58EB238BA24D007844ED /* AddAddressInfoView.swift in Sources */,
 				81B58A1B235DA1FC00816B4E /* StakingService.swift in Sources */,
+				E80DD542246D699400C4E439 /* Keystore.Address.swift in Sources */,
 				81B58A1C235DA1FC00816B4E /* UINavigationItem+Extensions.swift in Sources */,
 				81B58A1D235DA1FC00816B4E /* AlertStylePopViewController.swift in Sources */,
 				813A005B23692F33001CEE32 /* RemoteConfig.swift in Sources */,

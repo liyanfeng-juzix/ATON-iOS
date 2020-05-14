@@ -85,7 +85,7 @@ public final class WalletService {
 
         walletQueue.async {
             let walletName = WalletUtil.generateNewObservedWalletName()
-            let wallet = Wallet(name: walletName, address: address)
+            let wallet = Wallet(name: walletName, originAddress: address)
             DispatchQueue.main.async {
                 do {
                     try self.saveObservedWalletToDB(wallet: wallet)

@@ -12,8 +12,8 @@ extension Keystore {
         public var testnet: String
 
         public init(address: String, mainnetHrp: String, testnetHrp: String) {
-            self.mainnet = try? AddrCoder.shared.encode(hrp: mainnetHrp, address: address)
-            self.testnet = try? AddrCoder.shared.encode(hrp: testnetHrp, address: address)
+            self.mainnet = try! AddrCoder.shared.encode(hrp: mainnetHrp, address: address)
+            self.testnet = try! AddrCoder.shared.encode(hrp: testnetHrp, address: address)
         }
 
         public init(mainnet: String, testnet: String) {

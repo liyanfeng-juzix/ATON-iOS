@@ -9,6 +9,7 @@
 import Foundation
 import RealmSwift
 import BigInt
+import platonWeb3
 
 /// Support account types.
 public enum WalletType {
@@ -77,7 +78,8 @@ public final class Wallet: Object {
     // 0.7.3增加离线钱包，因为只有一个address，不能生成keystore，且之前uuid是key.address赋值，所以增加address，值为uuid
     var originAddress: String {
         guard let ks = key else { return uuid }
-        return ks.address
+//        return ks.address
+        return try! AddrCoder.shared.decodeHex(addr: ks.address.mainnet)
     }
 
     // 0.7.5 修改助记词存放位置
@@ -107,23 +109,39 @@ public final class Wallet: Object {
         }
     }
 
-    convenience init(name: String, address: String) {
+    convenience init(name: String, originAddress: String) {
         self.init()
-        primaryKeyIdentifier = address + SettingService.shareInstance.currentNodeChainId
-        self.uuid = address
+        primaryKeyIdentifier = originAddress + SettingService.shareInstance.currentNodeChainId
+        self.uuid = originAddress
         self.name = name
-        self.avatar = address.walletAddressLastCharacterAvatar()
+        self.avatar = originAddress.walletAddressLastCharacterAvatar()
+    }
+
+    convenience init(name: String, mainnetAddress: String) {
+        self.init()
+        uuid = try! AddrCoder.shared.decodeHex(addr: mainnetAddress)
+        primaryKeyIdentifier = uuid
+        self.name = name
+        self.avatar = uuid.walletAddressLastCharacterAvatar()
+    }
+
+    convenience init(name: String, testnetAddress: String) {
+        self.init()
+        uuid = try! AddrCoder.shared.decodeHex(addr: testnetAddress)
+        primaryKeyIdentifier = uuid
+        self.name = name
+        self.avatar = uuid.walletAddressLastCharacterAvatar()
     }
 
     convenience public init(name: String, keystoreObject:Keystore) {
 
         self.init()
-        uuid = keystoreObject.address
-        primaryKeyIdentifier = keystoreObject.address
+        uuid = try! AddrCoder.shared.decodeHex(addr: keystoreObject.address.mainnet)
+        primaryKeyIdentifier = uuid
         key = keystoreObject
         keystorePath = ""
         self.name = name
-        self.avatar = keystoreObject.address.walletAddressLastCharacterAvatar()
+        self.avatar = uuid.walletAddressLastCharacterAvatar()
     }
 
     override public static func ignoredProperties() -> [String] {
@@ -143,8 +161,9 @@ public final class Wallet: Object {
         let publicKeyData = WalletUtil.publicKeyFromPrivateKey(Data(bytes: privateKey.hexToBytes()))
 
         key!.publicKey = publicKeyData.toHexString()
-        key!.address = try! WalletUtil.addressFromPublicKey(publicKeyData, eip55: true)
-        uuid = key!.address
+        let originAddress = try! WalletUtil.addressFromPublicKey(publicKeyData, eip55: true)
+        key!.address = Keystore.Address(address: originAddress, mainnetHrp: AppConfig.Hrp.LAT, testnetHrp: AppConfig.Hrp.LAX)
+        uuid = originAddress
     }
 
 }
@@ -155,9 +174,9 @@ extension Wallet: Comparable {
         let rhsB = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == rhs.originAddress.lowercased() })
 
         guard
-            let lhsBBigUInt = BigUInt(lhsB?.free ?? "0"),
-            let rhsBBigUInt = BigUInt(rhsB?.free ?? "0") else {
-                return lhs.createTime < rhs.createTime
+                let lhsBBigUInt = BigUInt(lhsB?.free ?? "0"),
+                let rhsBBigUInt = BigUInt(rhsB?.free ?? "0") else {
+            return lhs.createTime < rhs.createTime
         }
 
         if lhsBBigUInt == rhsBBigUInt {
