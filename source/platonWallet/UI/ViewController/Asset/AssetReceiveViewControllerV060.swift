@@ -188,9 +188,9 @@ class AssetReceiveViewControllerV060: BaseViewController {
 
                 if let wallet = AssetVCSharedData.sharedData.selectedWallet as? Wallet {
                     self.sharedQRView.qrImageView.image = image
-                    self.sharedQRView.walletAddress.text = wallet.address
+                    self.sharedQRView.walletAddress.text = wallet.originAddress
                     self.sharedQRView.walletName.text = wallet.name
-                    self.sharedQRView.logoImage.image = UIImage(named: wallet.address.walletAddressLastCharacterAvatar())
+                    self.sharedQRView.logoImage.image = UIImage(named: wallet.originAddress.walletAddressLastCharacterAvatar())
 
                 }
 

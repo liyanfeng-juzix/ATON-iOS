@@ -75,7 +75,7 @@ public final class Wallet: Object {
     }
 
     // 0.7.3增加离线钱包，因为只有一个address，不能生成keystore，且之前uuid是key.address赋值，所以增加address，值为uuid
-    var address: String {
+    var originAddress: String {
         guard let ks = key else { return uuid }
         return ks.address
     }
@@ -151,8 +151,8 @@ public final class Wallet: Object {
 
 extension Wallet: Comparable {
     public static func < (lhs: Wallet, rhs: Wallet) -> Bool {
-        let lhsB = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == lhs.address.lowercased() })
-        let rhsB = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == rhs.address.lowercased() })
+        let lhsB = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == lhs.originAddress.lowercased() })
+        let rhsB = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == rhs.originAddress.lowercased() })
 
         guard
             let lhsBBigUInt = BigUInt(lhsB?.free ?? "0"),

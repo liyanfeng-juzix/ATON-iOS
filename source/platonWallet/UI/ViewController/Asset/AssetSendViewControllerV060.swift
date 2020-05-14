@@ -545,7 +545,7 @@ class AssetSendViewControllerV060: BaseViewController, UITextFieldDelegate {
         guard
             let toAddress = walletAddressView.textField.text,
             let wallet = AssetVCSharedData.sharedData.selectedWallet as? Wallet,
-            toAddress.ishexStringEqual(other: wallet.address) == false
+            toAddress.ishexStringEqual(other: wallet.originAddress) == false
         else {
             AssetViewControllerV060.getInstance()?.showMessage(text: Localized("cannot_send_itself"))
             return
@@ -563,13 +563,13 @@ class AssetSendViewControllerV060: BaseViewController, UITextFieldDelegate {
             return
         }
 
-        let transactions = TransferPersistence.getPendingTransaction(address: wallet.address)
+        let transactions = TransferPersistence.getPendingTransaction(address: wallet.originAddress)
         if transactions.count >= 0 && (Date().millisecondsSince1970 - (transactions.first?.createTime ?? 0) < 300 * 1000) {
             showErrorMessage(text: Localized("transaction_warning_wait_for_previous"))
             return
         }
 
-        let twoHourTxs = TwoHourTransactionPersistence.getTwoHourTransactions(from: wallet.address, to: toAddress, value: amountBInt.description)
+        let twoHourTxs = TwoHourTransactionPersistence.getTwoHourTransactions(from: wallet.originAddress, to: toAddress, value: amountBInt.description)
         let currentTimeInterval =  Date().millisecondsSince1970
         let twoHourTimeInterval = currentTimeInterval-AppConfig.OvertimeTranction.overtime
 
@@ -597,7 +597,7 @@ class AssetSendViewControllerV060: BaseViewController, UITextFieldDelegate {
 //        amountAttr.append(unionAttr)
         confirmView.totalLabel.attributedText = amountAttr
         confirmView.toAddressLabel.text = walletAddressView.textField.text!.addressDisplayInLocal() ?? "--"
-        confirmView.walletName.text = wallet.address.addressDisplayInLocal() ?? "--"
+        confirmView.walletName.text = wallet.originAddress.addressDisplayInLocal() ?? "--"
         let feeString = self.totalFee().divide(by: ETHToWeiMultiplier, round: 8)
         confirmView.feeLabel.text = feeString.ATPSuffix()
         confirmView.transactionTypeLabel.text = Localized("transferVC_confirm_ATP_send")
@@ -663,14 +663,14 @@ class AssetSendViewControllerV060: BaseViewController, UITextFieldDelegate {
             let gasLimit = useGasLimit.description
             let amount = (BigUInt.mutiply(a: amountLATString, by: ETHToWeiMultiplier) ?? BigUInt.zero).description
 
-            web3.platon.platonGetNonce(sender: wallet.address) { [weak self] (result, blockNonce) in
+            web3.platon.platonGetNonce(sender: wallet.originAddress) { [weak self] (result, blockNonce) in
                 guard let self = self else { return }
                 switch result {
                 case .success:
                     guard let nonce = blockNonce else { return }
                     let nonceString = nonce.quantity.description
 
-                    let transactionData = TransactionQrcode(amount: amount, chainId: web3.properties.chainId, from: wallet.address, to: to, gasLimit: gasLimit, gasPrice: gasPrice, nonce: nonceString, typ: nil, nodeId: nil, nodeName: nil, stakingBlockNum: nil, functionType: 0, rk: self.remarkView.textField.text)
+                    let transactionData = TransactionQrcode(amount: amount, chainId: web3.properties.chainId, from: wallet.originAddress, to: to, gasLimit: gasLimit, gasPrice: gasPrice, nonce: nonceString, typ: nil, nodeId: nil, nodeName: nil, stakingBlockNum: nil, functionType: 0, rk: self.remarkView.textField.text)
                     let qrcodeData = QrcodeData(qrCodeType: 0, qrCodeData: [transactionData], chainId: web3.chainId, functionType: nil, from: nil, nodeName: nil, rn: nil, timestamp: Int(Date().timeIntervalSince1970 * 1000), rk: nil, si: nil, v: 1)
                     guard
                         let data = try? JSONEncoder().encode(qrcodeData),
@@ -917,7 +917,7 @@ extension AssetSendViewControllerV060 {
         AnalysisHelper.handleEvent(id: event_send, operation: .end)
 
         AssetViewControllerV060.getInstance()?.showLoadingHUD()
-        let from = AssetVCSharedData.sharedData.cWallet?.address
+        let from = AssetVCSharedData.sharedData.cWallet?.originAddress
         let to = self.walletAddressView.textField.text!
         let remark = remarkView.textField.text
 

@@ -225,7 +225,7 @@ class AssetController {
             return
         }
         guard let wallet = notification.object as? Wallet else { return }
-        guard wallet.address.lowercased() == selectedAddress.lowercased() else { return }
+        guard wallet.originAddress.lowercased() == selectedAddress.lowercased() else { return }
         var tempData = viewModel.transactionsData.value
         tempData[selectedAddress]?.removeAll()
         viewModel.transactionsData.value = tempData

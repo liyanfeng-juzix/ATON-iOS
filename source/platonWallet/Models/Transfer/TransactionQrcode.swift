@@ -206,19 +206,19 @@ extension TransactionQrcode {
     }
 
     var fromName: String {
-        guard let wallet = (AssetVCSharedData.sharedData.walletList as? [Wallet])?.first(where: { $0.address.lowercased() == from?.lowercased() }) else {
+        guard let wallet = (AssetVCSharedData.sharedData.walletList as? [Wallet])?.first(where: { $0.originAddress.lowercased() == from?.lowercased() }) else {
             return from ?? "--"
         }
-        return wallet.name + "（\(wallet.address.addressForDisplayShort())）"
+        return wallet.name + "（\(wallet.originAddress.addressForDisplayShort())）"
     }
 
     var toName: String {
         switch functionType! {
         case 0:
-            guard let wallet = (AssetVCSharedData.sharedData.walletList as? [Wallet])?.first(where: { $0.address.lowercased() == to?.lowercased() }) else {
+            guard let wallet = (AssetVCSharedData.sharedData.walletList as? [Wallet])?.first(where: { $0.originAddress.lowercased() == to?.lowercased() }) else {
                 return to ?? "--"
             }
-            return wallet.name + "（\(wallet.address)）"
+            return wallet.name + "（\(wallet.originAddress)）"
         default:
             guard let nid = nodeId else { return "--" }
             guard let nName = nodeName else { return nid }

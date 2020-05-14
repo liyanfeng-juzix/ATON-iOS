@@ -42,7 +42,7 @@ class WalletManagerDetailViewController: BaseViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if let w = WalletService.sharedInstance.getWalletByAddress(address: wallet.address) {
+        if let w = WalletService.sharedInstance.getWalletByAddress(address: wallet.originAddress) {
             self.wallet = w
         }
 
@@ -54,7 +54,7 @@ class WalletManagerDetailViewController: BaseViewController {
         super.leftNavigationTitle = wallet.name
         deleteBtn.style = .delete
         walletName.text = wallet.name
-        address.text = wallet.address
+        address.text = wallet.originAddress
         address.adjustsFontSizeToFitWidth = true
         exportMnemonicContainer.isHidden = (self.wallet.keystoreMnemonic.count == 0)
 
@@ -90,7 +90,7 @@ class WalletManagerDetailViewController: BaseViewController {
 
     @IBAction func copyWalletAddress(_ sender: Any) {
         let pasteboard = UIPasteboard.general
-        pasteboard.string = wallet.address
+        pasteboard.string = wallet.originAddress
         UIApplication.shared.keyWindow?.rootViewController?.showMessage(text: Localized("ExportVC_copy_success"))
     }
 
@@ -220,7 +220,7 @@ class WalletManagerDetailViewController: BaseViewController {
         verifyPassword(psw, type: .deleteWallet) { [weak self](_) in
 
             // fix waiting
-            AssetService.sharedInstace.balances = AssetService.sharedInstace.balances.filter { $0.addr.lowercased() != self?.wallet.address.lowercased() }
+            AssetService.sharedInstace.balances = AssetService.sharedInstace.balances.filter { $0.addr.lowercased() != self?.wallet.originAddress.lowercased() }
             WalletService.sharedInstance.deleteWallet(self!.wallet)
             self?.navigationController?.popViewController(animated: true)
             NotificationCenter.default.post(name: Notification.Name.ATON.updateWalletList, object: nil)
@@ -239,7 +239,7 @@ class WalletManagerDetailViewController: BaseViewController {
     }
 
     func confirmToDeleteObserverWallet() {
-        AssetService.sharedInstace.balances = AssetService.sharedInstace.balances.filter { $0.addr.lowercased() != wallet.address.lowercased() }
+        AssetService.sharedInstace.balances = AssetService.sharedInstace.balances.filter { $0.addr.lowercased() != wallet.originAddress.lowercased() }
         WalletService.sharedInstance.deleteWallet(wallet)
         navigationController?.popViewController(animated: true)
         NotificationCenter.default.post(name: Notification.Name.ATON.updateWalletList, object: nil)

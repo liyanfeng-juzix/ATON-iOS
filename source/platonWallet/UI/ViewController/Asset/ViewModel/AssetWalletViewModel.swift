@@ -20,7 +20,7 @@ class AssetWalletViewModel: RowViewModel, ViewModelPressible {
     var isWalletSelected: Bool {
         guard
             let selectedWallet = AssetVCSharedData.sharedData.selectedWallet as? Wallet,
-            selectedWallet.address.lowercased() == wallet.address.lowercased() else {
+            selectedWallet.originAddress.lowercased() == wallet.originAddress.lowercased() else {
                 return false
         }
         return true

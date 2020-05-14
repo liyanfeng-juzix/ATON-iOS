@@ -65,7 +65,7 @@ class WalletManagerTableViewCell: UITableViewCell {
 
         if let aptWallet = wallet as? Wallet {
             walletName.text = aptWallet.name
-            address.text = aptWallet.address
+            address.text = aptWallet.originAddress
             walletIcon.image = UIImage(named: aptWallet.avatar)?.circleImage()
 
             backupContainer.isHidden = !aptWallet.canBackupMnemonic

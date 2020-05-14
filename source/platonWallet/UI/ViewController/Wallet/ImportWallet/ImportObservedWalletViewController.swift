@@ -206,7 +206,7 @@ class ImportObservedWalletViewController: BaseImportWalletViewController {
             return false
         }
 
-        let addresses = (AssetVCSharedData.sharedData.walletList as! [Wallet]).map { $0.address.add0x().lowercased() }
+        let addresses = (AssetVCSharedData.sharedData.walletList as! [Wallet]).map { $0.originAddress.add0x().lowercased() }
         if addresses.contains(addresstextView.text!.add0x().lowercased()) {
             if showError {
                 textViewTipLabel.text = Localized("importKeystoreVC_observed_existed_tips")

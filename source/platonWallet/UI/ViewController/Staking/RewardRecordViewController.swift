@@ -73,7 +73,7 @@ class RewardRecordViewController: BaseViewController {
 extension RewardRecordViewController {
     private func fetchData(sequence: Int, direction: RefreshDirection) {
 
-        let addresses = (AssetVCSharedData.sharedData.walletList as! [Wallet]).map { return $0.address }
+        let addresses = (AssetVCSharedData.sharedData.walletList as! [Wallet]).map { return $0.originAddress }
         guard addresses.count > 0 else {
             self.tableView.mj_header.endRefreshing()
             self.tableView.mj_footer.endRefreshing()

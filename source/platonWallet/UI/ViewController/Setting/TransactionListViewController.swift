@@ -57,10 +57,10 @@ class TransactionListViewController: BaseViewController,UITableViewDelegate,UITa
         var addressStrs: [String] = []
 
         if let wallet = selectedWallet {
-            addressStrs.append(wallet.address)
+            addressStrs.append(wallet.originAddress)
         } else {
             let allLocalAddresses = AssetVCSharedData.sharedData.walletList.filterClassicWallet.map { cwallet in
-                return cwallet.address
+                return cwallet.originAddress
             }
             addressStrs.append(contentsOf: allLocalAddresses)
         }
@@ -77,10 +77,10 @@ class TransactionListViewController: BaseViewController,UITableViewDelegate,UITa
         var addressStrs: [String] = []
 
         if let wallet = selectedWallet {
-            addressStrs.append(wallet.address)
+            addressStrs.append(wallet.originAddress)
         } else {
             let allLocalAddresses = AssetVCSharedData.sharedData.walletList.filterClassicWallet.map { cwallet in
-                return cwallet.address
+                return cwallet.originAddress
             }
             addressStrs.append(contentsOf: allLocalAddresses)
         }
@@ -118,7 +118,7 @@ class TransactionListViewController: BaseViewController,UITableViewDelegate,UITa
                 }
 
                 for tx in transactions {
-                    tx.direction = tx.getTransactionDirection(self.selectedWallet?.address)
+                    tx.direction = tx.getTransactionDirection(self.selectedWallet?.originAddress)
                 }
 
                 if transactions.count >= self.listSize {

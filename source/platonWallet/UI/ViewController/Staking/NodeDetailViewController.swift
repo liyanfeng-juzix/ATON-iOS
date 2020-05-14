@@ -228,7 +228,7 @@ class NodeDetailViewController: BaseViewController {
         guard let node = nodeDetail?.node else { return }
         let controller = DelegateViewController()
         controller.currentNode = node
-        controller.currentAddress = (AssetVCSharedData.sharedData.selectedWallet as? Wallet)?.address
+        controller.currentAddress = (AssetVCSharedData.sharedData.selectedWallet as? Wallet)?.originAddress
         navigationController?.pushViewController(controller, animated: true)
     }
 

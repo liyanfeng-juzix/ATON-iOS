@@ -63,10 +63,10 @@ class AssetVCSharedData {
     var selectedWallet: AnyObject? {
         guard
             let address = currentWalletAddress,
-            let wallet = (walletList as? [Wallet])?.first(where: { $0.address.lowercased() == address.lowercased() })
+            let wallet = (walletList as? [Wallet])?.first(where: { $0.originAddress.lowercased() == address.lowercased() })
             else {
                 if let defaultWallet = walletList.first as? Wallet {
-                    currentWalletAddress = defaultWallet.address
+                    currentWalletAddress = defaultWallet.originAddress
                     return defaultWallet
                 }
                 return nil
@@ -107,7 +107,7 @@ class AssetVCSharedData {
     }
     var selectedWalletAddress: String? {
         if cWallet != nil {
-            return cWallet?.address
+            return cWallet?.originAddress
         }
         return ""
     }
@@ -123,7 +123,7 @@ class AssetVCSharedData {
         //issue mutiply thread access wallet object?
         if let wallet = object as? Wallet {
             if let selectedWallet = AssetVCSharedData.sharedData.selectedWallet as? Wallet {
-                if selectedWallet.address.ishexStringEqual(other: wallet.address) {
+                if selectedWallet.originAddress.ishexStringEqual(other: wallet.originAddress) {
 //                    AssetVCSharedData.sharedData.selectedWallet = nil
                     AssetVCSharedData.sharedData.currentWalletAddress = nil;
                 }
@@ -136,7 +136,7 @@ class AssetVCSharedData {
 
     public func reloadWallets() {
         let newList = self.walletList
-        currentWalletAddress = (newList as? [Wallet])?.first?.address
+        currentWalletAddress = (newList as? [Wallet])?.first?.originAddress
 //        if newList.count > 0 {
 //            self.selectedWallet = newList.first as AnyObject
 //        } else {
@@ -149,8 +149,8 @@ class AssetVCSharedData {
             let sw = selectedWallet as? Wallet,
             let wl = walletList as? [Wallet]
         else { return }
-        let currentSw = wl.first(where: { $0.address.lowercased() == sw.address.lowercased() })
-        currentWalletAddress = currentSw?.address
+        let currentSw = wl.first(where: { $0.originAddress.lowercased() == sw.originAddress.lowercased() })
+        currentWalletAddress = currentSw?.originAddress
 //        selectedWallet = currentSw
     }
 }
@@ -158,7 +158,7 @@ class AssetVCSharedData {
 extension AssetVCSharedData {
     // 通过地址查询本地的账号名称
     func getWalletName(for address: String) -> String? {
-        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.address.lowercased() == address.lowercased() }.first
+        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.originAddress.lowercased() == address.lowercased() }.first
         return localWallet?.name
     }
 }

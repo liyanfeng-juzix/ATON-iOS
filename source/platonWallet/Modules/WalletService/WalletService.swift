@@ -41,7 +41,7 @@ public final class WalletService {
 
     func getWalletByAddress(address: String) -> Wallet? {
         for item in wallets {
-            if item.address.ishexStringEqual(other: address) {
+            if item.originAddress.ishexStringEqual(other: address) {
                 return item
             }
         }
@@ -385,7 +385,7 @@ public final class WalletService {
 
         NotificationCenter.default.post(name: Notification.Name.ATON.WillDeleateWallet, object: wallet)
 
-        AssetService.sharedInstace.balances = AssetService.sharedInstace.balances.filter { $0.addr.lowercased() != wallet.address.lowercased() }
+        AssetService.sharedInstace.balances = AssetService.sharedInstace.balances.filter { $0.addr.lowercased() != wallet.originAddress.lowercased() }
 
         wallets.removeAll(where: { $0.uuid == wallet.uuid})
 
@@ -451,7 +451,7 @@ public final class WalletService {
         }
 
         let sameUuidWallet = wallets.first { (item) -> Bool in
-            (item.uuid == wallet.uuid) || (item.address.lowercased() == wallet.address.lowercased())
+            (item.uuid == wallet.uuid) || (item.originAddress.lowercased() == wallet.originAddress.lowercased())
         }
 
         if sameUuidWallet != nil {

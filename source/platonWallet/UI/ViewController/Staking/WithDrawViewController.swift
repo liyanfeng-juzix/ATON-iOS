@@ -48,7 +48,7 @@ class WithDrawViewController: BaseViewController {
 
     var amountBalance: BigUInt {
         guard
-            let balance = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == walletStyle?.currentWallet.address.lowercased() }),
+            let balance = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == walletStyle?.currentWallet.originAddress.lowercased() }),
             let freeBalance = BigUInt(balance.free ?? "0")?.convertBalanceDecimalPlaceToZero() else { return BigUInt.zero }
         return freeBalance
     }
@@ -183,7 +183,7 @@ class WithDrawViewController: BaseViewController {
     }
 
     private func initListData() {
-        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).first { $0.address.lowercased() == currentAddress?.lowercased() }
+        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).first { $0.originAddress.lowercased() == currentAddress?.lowercased() }
         guard
             let node = currentNode,
             let bStyle = balanceStyle,
@@ -367,7 +367,7 @@ extension WithDrawViewController {
         }
 
         guard
-            let balance = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == walletStyle?.currentWallet.address.lowercased() }),
+            let balance = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == walletStyle?.currentWallet.originAddress.lowercased() }),
             let freeBalance = BigUInt(balance.free ?? "0"),
             let selectedGasPrice = gasPrice,
             let selectedGasLimit = gasLimit,
@@ -381,9 +381,9 @@ extension WithDrawViewController {
             let nodeId = currentNode?.nodeId,
             let stakingBlockNum = balanceStyle?.currentBlockNum
         else { return }
-        let currentAddress = walletObject.currentWallet.address
+        let currentAddress = walletObject.currentWallet.originAddress
 
-        let transactions = TransferPersistence.getPendingTransaction(address: walletObject.currentWallet.address)
+        let transactions = TransferPersistence.getPendingTransaction(address: walletObject.currentWallet.originAddress)
         if transactions.count >= 0 && (Date().millisecondsSince1970 - (transactions.first?.createTime ?? 0) < 300 * 1000) {
             showErrorMessage(text: Localized("transaction_warning_wait_for_previous"))
             return
@@ -392,9 +392,9 @@ extension WithDrawViewController {
         guard let nonce = delegation?.nonceBInt else { return }
         if walletObject.currentWallet.type == .observed {
             let funcType = FuncType.withdrewDelegate(stakingBlockNum: stakingBlockNum, nodeId: nodeId, amount: self.currentAmount)
-            let transactionData = TransactionQrcode(amount: self.currentAmount.description, chainId: web3.properties.chainId, from: walletObject.currentWallet.address, to: PlatonConfig.ContractAddress.stakingContractAddress, gasLimit: selectedGasLimit.description, gasPrice: selectedGasPrice.description, nonce: nonce.description, typ: nil, nodeId: nodeId, nodeName: self.currentNode?.name, stakingBlockNum: String(stakingBlockNum), functionType: funcType.typeValue, rk: nil)
+            let transactionData = TransactionQrcode(amount: self.currentAmount.description, chainId: web3.properties.chainId, from: walletObject.currentWallet.originAddress, to: PlatonConfig.ContractAddress.stakingContractAddress, gasLimit: selectedGasLimit.description, gasPrice: selectedGasPrice.description, nonce: nonce.description, typ: nil, nodeId: nodeId, nodeName: self.currentNode?.name, stakingBlockNum: String(stakingBlockNum), functionType: funcType.typeValue, rk: nil)
 
-            let qrcodeData = QrcodeData(qrCodeType: 0, qrCodeData: [transactionData], chainId: web3.chainId, functionType: 1005, from: walletObject.currentWallet.address, nodeName: self.currentNode?.name, rn: nil, timestamp: Int(Date().timeIntervalSince1970 * 1000), rk: nil, si: nil, v: 1)
+            let qrcodeData = QrcodeData(qrCodeType: 0, qrCodeData: [transactionData], chainId: web3.chainId, functionType: 1005, from: walletObject.currentWallet.originAddress, nodeName: self.currentNode?.name, rn: nil, timestamp: Int(Date().timeIntervalSince1970 * 1000), rk: nil, si: nil, v: 1)
             guard
                 let data = try? JSONEncoder().encode(qrcodeData),
                 let content = String(data: data, encoding: .utf8) else { return }
@@ -713,7 +713,7 @@ extension WithDrawViewController {
             let walletObject = walletStyle,
             let nodeId = currentNode?.nodeId else { return }
 
-        let transactions = TransferPersistence.getDelegateWithdrawPendingTransaction(address: walletObject.currentWallet.address, nodeId: nodeId)
+        let transactions = TransferPersistence.getDelegateWithdrawPendingTransaction(address: walletObject.currentWallet.originAddress, nodeId: nodeId)
         guard transactions.count > 0 else {
             stopTimer()
             return

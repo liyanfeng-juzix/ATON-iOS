@@ -82,7 +82,7 @@ class AssetViewControllerV060: UIViewController, PopupMenuTableDelegate {
     var localDataSource = [String: [Transaction]]()
 
     var walletAddress: String? {
-        return (AssetVCSharedData.sharedData.selectedWallet as? Wallet)?.address
+        return (AssetVCSharedData.sharedData.selectedWallet as? Wallet)?.originAddress
     }
     var isShowNavigationBar: Bool = false
 
@@ -409,7 +409,7 @@ extension AssetViewControllerV060 {
             return
         }
 
-        let wallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).first(where: { $0.address.lowercased() == codes.first?.from?.lowercased() })
+        let wallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).first(where: { $0.originAddress.lowercased() == codes.first?.from?.lowercased() })
         guard wallet != nil else {
             showErrorMessage(text: Localized("offline_signature_not_privatekey"), delay: 2.0)
             return
