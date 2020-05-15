@@ -82,6 +82,15 @@ public final class Wallet: Object {
         return try! AddrCoder.shared.decodeHex(addr: ks.address.mainnet)
     }
 
+    var address: String {
+        guard let ks = key else { return uuid }
+        if(AppConfig.Hrp.LAT == SettingService.shareInstance.currentNodeHrp) {
+            return ks.address.mainnet
+        } else {
+            return ks.address.testnet
+        }
+    }
+
     // 0.7.5 修改助记词存放位置
     var keystoreMnemonic: String {
         guard version >= 1 else {
