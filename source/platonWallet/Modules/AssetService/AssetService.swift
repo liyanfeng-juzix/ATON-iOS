@@ -30,7 +30,7 @@ class AssetService : BaseService {
 
     func fetchWalletBalanceForV7(_ completion: PlatonCommonCompletion?) {
         let completion = completion
-        let addresses = (AssetVCSharedData.sharedData.walletList as! [Wallet]).map { return $0.originAddress }
+        let addresses = (AssetVCSharedData.sharedData.walletList as! [Wallet]).map { return $0.address }
         guard addresses.count > 0 else {
             completion?(PlatonCommonResult.success, nil)
             NotificationCenter.default.post(name: Notification.Name.ATON.DidUpdateAllAsset, object: nil)

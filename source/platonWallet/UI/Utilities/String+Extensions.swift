@@ -48,6 +48,19 @@ extension String {
 }
 
 extension String {
+    func isMainnetAddress() -> Bool {
+        let regex = "(lat)?[A-Za-z0-9]{39}"
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        let isValid = predicate.evaluate(with: self)
+        return isValid
+    }
+
+    func isTestnetAddress() -> Bool {
+        let regex = "(lax)?[A-Za-z0-9]{39}"
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        let isValid = predicate.evaluate(with: self)
+        return isValid
+    }
 
     func is40ByteAddress() -> Bool {
         let regex = "(0x)?[A-Fa-f0-9]{40}"

@@ -196,7 +196,7 @@ class ImportObservedWalletViewController: BaseImportWalletViewController {
             return false
         }
 
-        if !addresstextView.text!.is40ByteAddress() {
+        if !WalletUtil.isValidAddress(addresstextView.text!) {
             if showError {
                 textViewTipLabel.text = Localized("importKeystoreVC_observed_invalid_tips")
                 submitButtonTopConstaint?.activate()

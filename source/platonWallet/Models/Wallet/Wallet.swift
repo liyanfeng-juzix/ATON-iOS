@@ -83,7 +83,13 @@ public final class Wallet: Object {
     }
 
     var address: String {
-        guard let ks = key else { return uuid }
+        guard let ks = key else {
+            if(AppConfig.Hrp.LAT == SettingService.shareInstance.currentNodeHrp) {
+                return try! AddrCoder.shared.encode(hrp: AppConfig.Hrp.LAT, address: uuid)
+            } else {
+                return try! AddrCoder.shared.encode(hrp: AppConfig.Hrp.LAX, address: uuid)
+            }
+        }
         if(AppConfig.Hrp.LAT == SettingService.shareInstance.currentNodeHrp) {
             return ks.address.mainnet
         } else {

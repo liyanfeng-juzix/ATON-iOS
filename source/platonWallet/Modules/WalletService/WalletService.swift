@@ -9,6 +9,7 @@
 import Foundation
 import RealmSwift
 import Localize_Swift
+import platonWeb3
 
 let keystoreFolderPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] + "/keystore"
 
@@ -41,7 +42,7 @@ public final class WalletService {
 
     func getWalletByAddress(address: String) -> Wallet? {
         for item in wallets {
-            if item.originAddress.ishexStringEqual(other: address) {
+            if item.address.ishexStringEqual(other: address) {
                 return item
             }
         }
@@ -77,6 +78,7 @@ public final class WalletService {
         }
     }
 
+    // 导入观察钱包
     public func `import`(address: String, completion: @escaping (Wallet?, Error?) -> Void) {
         guard WalletUtil.isValidAddress(address) else {
             completion(nil, Error.invalidAddress)
@@ -85,7 +87,9 @@ public final class WalletService {
 
         walletQueue.async {
             let walletName = WalletUtil.generateNewObservedWalletName()
-            let wallet = Wallet(name: walletName, originAddress: address)
+
+            let wallet = Wallet(name: walletName, originAddress: try! AddrCoder.shared.decodeHex(addr: address))
+
             DispatchQueue.main.async {
                 do {
                     try self.saveObservedWalletToDB(wallet: wallet)
@@ -385,7 +389,7 @@ public final class WalletService {
 
         NotificationCenter.default.post(name: Notification.Name.ATON.WillDeleateWallet, object: wallet)
 
-        AssetService.sharedInstace.balances = AssetService.sharedInstace.balances.filter { $0.addr.lowercased() != wallet.originAddress.lowercased() }
+        AssetService.sharedInstace.balances = AssetService.sharedInstace.balances.filter { $0.addr.lowercased() != wallet.address.lowercased() }
 
         wallets.removeAll(where: { $0.uuid == wallet.uuid})
 
@@ -451,7 +455,7 @@ public final class WalletService {
         }
 
         let sameUuidWallet = wallets.first { (item) -> Bool in
-            (item.uuid == wallet.uuid) || (item.originAddress.lowercased() == wallet.originAddress.lowercased())
+            (item.uuid == wallet.uuid) || (item.address.lowercased() == wallet.address.lowercased())
         }
 
         if sameUuidWallet != nil {
