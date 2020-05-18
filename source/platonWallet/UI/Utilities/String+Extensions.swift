@@ -87,6 +87,15 @@ extension String {
         return isValid
     }
 
+    func isBech32AddressEqual(other: String?) -> Bool {
+        if other == nil || other?.length == 0 {
+            return self == other
+        }
+        var newString = self
+        var newOther = other
+        return newString.lowercased() == newOther?.lowercased()
+    }
+
     func ishexStringEqual(other: String?) -> Bool {
         if other == nil || other?.length == 0 {
             return self == other
@@ -202,6 +211,10 @@ extension String {
         if hasPrefix("0x") {
             return String(dropFirst(2))
         }
+        return self
+    }
+
+    func add0xBech32() -> String {
         return self
     }
 
@@ -396,6 +409,10 @@ extension String {
         return self.substr(0, 10)! + "......" + self.substr(120, 10)!
     }
 
+    func addressForDisplayLeading4Trailing8Bech32() -> String {
+        return self.substr(0, 6)! + "...." + self.substr(34, 8)!
+    }
+
     func addressForDisplayLeading4Trailing8() -> String {
         guard self.is40ByteAddress() else {
             return self
@@ -501,7 +518,7 @@ extension String {
     }
 
     func addressDisplayInLocal() -> String? {
-        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.originAddress.lowercased() == self.lowercased() }.first
+        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.address.lowercased() == self.lowercased() }.first
         if let wallet = localWallet {
             return wallet.name + "(\(self.addressForDisplayShort()))"
         } else {

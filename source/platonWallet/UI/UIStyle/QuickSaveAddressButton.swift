@@ -45,7 +45,7 @@ class QuickSaveAddressButton: UIButton {
                 self.status = .QuickSaveDisable
                 return
             }
-            if AddressBookService.service.getAll().contains(where: {($0.walletAddress?.ishexStringEqual(other: address!))!}) {
+            if AddressBookService.service.getAll().contains(where: {($0.walletAddress?.isBech32AddressEqual(other: address!))!}) {
                 self.status = .QuickSaveDisable
             } else {
                 self.status = .QuickSaveEnable
@@ -54,7 +54,7 @@ class QuickSaveAddressButton: UIButton {
     }
 
     func quickSave(address: String?, name: String?) {
-        guard address != nil, name != nil, CommonService.checkNewAddressName(name).0, address!.is40ByteAddress(), !AddressBookService.service.getAll().contains(where: {($0.walletAddress?.ishexStringEqual(other: address!))!}) else {
+        guard address != nil, name != nil, CommonService.checkNewAddressName(name).0, address!.is40ByteAddress(), !AddressBookService.service.getAll().contains(where: {($0.walletAddress?.isBech32AddressEqual(other: address!))!}) else {
             return
         }
         let addressInfo = AddressInfo()

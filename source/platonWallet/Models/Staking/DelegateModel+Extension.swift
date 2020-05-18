@@ -17,8 +17,8 @@ extension Delegate {
     }
 
     var walletAvatar: UIImage? {
-        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.originAddress.lowercased() == walletAddress.lowercased() }.first
-        guard let avatarString = localWallet?.originAddress.walletAddressLastCharacterAvatar() else { return nil }
+        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.address.lowercased() == walletAddress.lowercased() }.first
+        guard let avatarString = localWallet?.address.walletAddressLastCharacterAvatar() else { return nil }
         return UIImage(named: avatarString)
     }
 
@@ -102,7 +102,7 @@ extension DelegateDetail {
     }
 
     func isExistWallet(address: String) -> Bool {
-        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.originAddress.lowercased() == address.lowercased() }.first
+        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.address.lowercased() == address.lowercased() }.first
         return localWallet != nil
     }
 

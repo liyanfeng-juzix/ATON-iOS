@@ -83,15 +83,15 @@ class TransferSwitchWallet: UIView, UITableViewDataSource, UITableViewDelegate {
 
             cell.walletName.text = wallet.name
 
-            if (selectedAddress != nil) && (wallet.originAddress.ishexStringEqual(other: selectedAddress!)) {
+            if (selectedAddress != nil) && (wallet.address.isBech32AddressEqual(other: selectedAddress!)) {
                 cell.checkIcon.isHidden = false
             } else {
                 cell.checkIcon.isHidden = true
             }
 
-            let av = wallet.originAddress.walletAddressLastCharacterAvatar()
+            let av = wallet.address.walletAddressLastCharacterAvatar()
             cell.walletIcon.image = UIImage(named: av )?.circleImage()
-            cell.walletBalance.text = wallet.originAddress.prefix(10) + "..." + wallet.originAddress.suffix(10)
+            cell.walletBalance.text = wallet.address.prefix(10) + "..." + wallet.address.suffix(10)
 
         } else {
             return SwitchWalletTableViewCell()

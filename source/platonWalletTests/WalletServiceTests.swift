@@ -134,7 +134,7 @@ class WalletServiceTests: XCTestCase {
             }
             XCTAssertNotNil(wallet, "create wallet shoulde be not nil")
             if let wal = wallet {
-                XCTAssertEqual(wal.originAddress, address, "wallet address should be equal")
+                XCTAssertEqual(wal.address, address, "wallet address should be equal")
                 WalletService.sharedInstance.deleteWallet(wal)
             }
             expectaion.fulfill()

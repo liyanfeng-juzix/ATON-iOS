@@ -42,7 +42,7 @@ public final class WalletService {
 
     func getWalletByAddress(address: String) -> Wallet? {
         for item in wallets {
-            if item.address.ishexStringEqual(other: address) {
+            if item.address.isBech32AddressEqual(other: address) {
                 return item
             }
         }

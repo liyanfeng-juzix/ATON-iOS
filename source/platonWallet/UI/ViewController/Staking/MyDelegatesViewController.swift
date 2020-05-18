@@ -242,7 +242,7 @@ class MyDelegatesViewController: BaseViewController, IndicatorInfoProvider {
 
     func inputPasswordForClaimTransaction(delegate: Delegate, gas: RemoteGas) {
         currentDelegate = delegate
-        guard let wallet = (AssetVCSharedData.sharedData.walletList as? [Wallet])?.first(where: { $0.originAddress.lowercased() == delegate.walletAddress.lowercased() }) else {
+        guard let wallet = (AssetVCSharedData.sharedData.walletList as? [Wallet])?.first(where: { $0.address.lowercased() == delegate.walletAddress.lowercased() }) else {
             showMessage(text: "notfound wallet", delay: 2.0)
             return
         }
@@ -252,7 +252,7 @@ class MyDelegatesViewController: BaseViewController, IndicatorInfoProvider {
             return
         }
 
-        TransactionService.service.getContractGas(from: wallet.originAddress, txType: .claimReward) { [weak self] (result, remoteGas) in
+        TransactionService.service.getContractGas(from: wallet.address, txType: .claimReward) { [weak self] (result, remoteGas) in
             guard let self = self else { return }
             switch result {
             case .success:
@@ -261,9 +261,9 @@ class MyDelegatesViewController: BaseViewController, IndicatorInfoProvider {
                     let funcType = FuncType.withdrawDelegateReward
                     let nonceString = gas.nonceBInt.description
 
-                    let transactionData = TransactionQrcode(amount: amount, chainId: web3.properties.chainId, from: wallet.originAddress, to: PlatonConfig.ContractAddress.rewardContractAddress, gasLimit: gas.gasLimit, gasPrice: gas.gasPrice, nonce: nonceString, typ: nil, nodeId: nil, nodeName: nil, stakingBlockNum: nil, functionType: funcType.typeValue, rk: nil)
+                    let transactionData = TransactionQrcode(amount: amount, chainId: web3.properties.chainId, from: wallet.address, to: PlatonConfig.ContractAddress.rewardContractAddress, gasLimit: gas.gasLimit, gasPrice: gas.gasPrice, nonce: nonceString, typ: nil, nodeId: nil, nodeName: nil, stakingBlockNum: nil, functionType: funcType.typeValue, rk: nil)
 
-                    let qrcodeData = QrcodeData(qrCodeType: 0, qrCodeData: [transactionData], chainId: web3.chainId, functionType: 5000, from: wallet.originAddress, nodeName: nil, rn: amount, timestamp: Int(Date().timeIntervalSince1970 * 1000), rk: nil, si: nil, v: 1)
+                    let qrcodeData = QrcodeData(qrCodeType: 0, qrCodeData: [transactionData], chainId: web3.chainId, functionType: 5000, from: wallet.address, nodeName: nil, rn: amount, timestamp: Int(Date().timeIntervalSince1970 * 1000), rk: nil, si: nil, v: 1)
                     guard
                         let data = try? JSONEncoder().encode(qrcodeData),
                         let content = String(data: data, encoding: .utf8) else { return }
@@ -404,7 +404,7 @@ class MyDelegatesViewController: BaseViewController, IndicatorInfoProvider {
                 let signedTransaction = try? EthereumSignedTransaction(rlp: signedTransactionRLP) {
 
                 guard
-                    let to = signedTransaction.to?.rawAddress.toHexString().add0x() else { return }
+                    let to = signedTransaction.to?.rawAddress.toHexString().add0xBech32() else { return }
                 let gasPrice = signedTransaction.gasPrice.quantity
                 let gasLimit = signedTransaction.gasLimit.quantity
                 let gasUsed = gasPrice.multiplied(by: gasLimit).description
@@ -499,7 +499,7 @@ extension MyDelegatesViewController: UITableViewDelegate, UITableViewDataSource 
 
 extension MyDelegatesViewController {
     @objc func fetchData() {
-        let addresses = (AssetVCSharedData.sharedData.walletList as! [Wallet]).map { return $0.originAddress }
+        let addresses = (AssetVCSharedData.sharedData.walletList as! [Wallet]).map { return $0.address }
         guard addresses.count > 0 else {
             self.tableView.mj_header.endRefreshing()
             return

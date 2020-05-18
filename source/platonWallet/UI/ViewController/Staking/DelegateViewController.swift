@@ -55,7 +55,7 @@ class DelegateViewController: BaseViewController {
 
     var freeBalanceBInt: BigUInt {
         guard
-            let balance = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == walletStyle?.currentWallet.originAddress.lowercased() }),
+            let balance = AssetService.sharedInstace.balances.first(where: { $0.addr.lowercased() == walletStyle?.currentWallet.address.lowercased() }),
             let freeBInt = BigUInt(balance.free ?? "0")?.convertBalanceDecimalPlaceToZero() else {
                 return BigUInt.zero
         }
@@ -118,7 +118,7 @@ class DelegateViewController: BaseViewController {
 
     func initBalanceStyle() {
         let balance = AssetService.sharedInstace.balances.first { (item) -> Bool in
-            return item.addr.lowercased() == walletStyle!.currentWallet.originAddress.lowercased()
+            return item.addr.lowercased() == walletStyle!.currentWallet.address.lowercased()
         }
         var balances: [(String, String, Bool)] = []
         balances.append((Localized("staking_balance_can_used"), (BigUInt(balance?.free ?? "0") ?? BigUInt.zero).convertBalanceDecimalPlaceToZero().description, false))
@@ -137,22 +137,22 @@ class DelegateViewController: BaseViewController {
         let item1 = DelegateTableViewCellStyle.nodeInfo(node: node)
         // 每次出现当前页面就会重新生成钱包列表和余额列表，当前选中的地址
         if walletStyle != nil {
-            currentAddress = walletStyle?.currentWallet.originAddress
+            currentAddress = walletStyle?.currentWallet.address
         }
 
         // 有已选中的钱包则默认选中
         var index: Int? = 0
         if
             let address = currentAddress,
-            let wallet = canUseWallets.first(where: { $0.originAddress.lowercased() == address.lowercased() }) {
+            let wallet = canUseWallets.first(where: { $0.address.lowercased() == address.lowercased() }) {
             index = canUseWallets.firstIndex(of: wallet)
         } else {
-            currentAddress = canUseWallets[index ?? 0].originAddress
+            currentAddress = canUseWallets[index ?? 0].address
         }
         walletStyle = WalletsCellStyle(wallets: canUseWallets, selectedIndex: index ?? 0, isExpand: false)
 
         let balance = AssetService.sharedInstace.balances.first { (item) -> Bool in
-            return item.addr.lowercased() == walletStyle!.currentWallet.originAddress.lowercased()
+            return item.addr.lowercased() == walletStyle!.currentWallet.address.lowercased()
         }
 
         var balances: [(String, String, Bool)] = []
@@ -324,13 +324,13 @@ extension DelegateViewController {
             let selectedGasPrice = gasPrice,
             let selectedGasLimit = gasLimit else { return }
 
-        let transactions = TransferPersistence.getPendingTransaction(address: walletObject.currentWallet.originAddress)
+        let transactions = TransferPersistence.getPendingTransaction(address: walletObject.currentWallet.address)
         if transactions.count >= 0 && (Date().millisecondsSince1970 - (transactions.first?.createTime ?? 0) < 300 * 1000) {
             showErrorMessage(text: Localized("transaction_warning_wait_for_previous"))
             return
         }
 
-        let currentAddress = walletObject.currentWallet.originAddress
+        let currentAddress = walletObject.currentWallet.address
 
         let typ = balanceObject.selectedIndex == 0 ? UInt16(0) : UInt16(1) // 0：自由金额 1：锁仓金额
 
@@ -338,9 +338,9 @@ extension DelegateViewController {
         if walletObject.currentWallet.type == .observed {
             let funcType = FuncType.createDelegate(typ: typ, nodeId: nodeId, amount: self.currentAmount)
 
-            let transactionData = TransactionQrcode(amount: self.currentAmount.description, chainId: web3.properties.chainId, from: walletObject.currentWallet.originAddress, to: PlatonConfig.ContractAddress.stakingContractAddress, gasLimit: selectedGasLimit.description, gasPrice: selectedGasPrice.description, nonce: nonce.description, typ: typ, nodeId: nodeId, nodeName: self.currentNode?.name, stakingBlockNum: nil, functionType: funcType.typeValue, rk: nil)
+            let transactionData = TransactionQrcode(amount: self.currentAmount.description, chainId: web3.properties.chainId, from: walletObject.currentWallet.address, to: PlatonConfig.ContractAddress.stakingContractAddress, gasLimit: selectedGasLimit.description, gasPrice: selectedGasPrice.description, nonce: nonce.description, typ: typ, nodeId: nodeId, nodeName: self.currentNode?.name, stakingBlockNum: nil, functionType: funcType.typeValue, rk: nil)
 
-            let qrcodeData = QrcodeData(qrCodeType: 0, qrCodeData: [transactionData], chainId: web3.chainId, functionType: 1004, from: walletObject.currentWallet.originAddress, nodeName: self.currentNode?.name, rn: nil, timestamp: Int(Date().timeIntervalSince1970 * 1000), rk: nil, si: nil, v: 1)
+            let qrcodeData = QrcodeData(qrCodeType: 0, qrCodeData: [transactionData], chainId: web3.chainId, functionType: 1004, from: walletObject.currentWallet.address, nodeName: self.currentNode?.name, rn: nil, timestamp: Int(Date().timeIntervalSince1970 * 1000), rk: nil, si: nil, v: 1)
             guard
                 let data = try? JSONEncoder().encode(qrcodeData),
                 let content = String(data: data, encoding: .utf8) else { return }
@@ -481,7 +481,7 @@ extension DelegateViewController {
                 let signedTransaction = try? EthereumSignedTransaction(rlp: signedTransactionRLP) {
 
                 guard
-                    let to = signedTransaction.to?.rawAddress.toHexString().add0x() else { return }
+                    let to = signedTransaction.to?.rawAddress.toHexString().add0xBech32() else { return }
                 let gasPrice = signedTransaction.gasPrice.quantity
                 let gasLimit = signedTransaction.gasLimit.quantity
                 let gasUsed = gasPrice.multiplied(by: gasLimit).description
@@ -565,7 +565,7 @@ extension DelegateViewController {
         listData[indexSection] = DelegateTableViewCellStyle.wallets(walletStyle: walletStyle!)
 
         let balance = AssetService.sharedInstace.balances.first { (item) -> Bool in
-            return item.addr.lowercased() == walletStyle?.currentWallet.originAddress.lowercased()
+            return item.addr.lowercased() == walletStyle?.currentWallet.address.lowercased()
         }
 
         var balances: [(String, String, Bool)] = []
@@ -712,7 +712,7 @@ extension DelegateViewController {
             let walletObject = walletStyle,
             let nodeId = currentNode?.nodeId else { return }
 
-        let transactions = TransferPersistence.getDelegateCreatePendingTransaction(address: walletObject.currentWallet.originAddress, nodeId: nodeId)
+        let transactions = TransferPersistence.getDelegateCreatePendingTransaction(address: walletObject.currentWallet.address, nodeId: nodeId)
         guard transactions.count > 0 else {
             stopTimer()
             return

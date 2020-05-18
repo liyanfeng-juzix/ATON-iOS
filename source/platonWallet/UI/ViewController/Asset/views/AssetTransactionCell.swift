@@ -144,7 +144,7 @@ class AssetTransactionCell: UITableViewCell {
 
     func updateCellWithAPTTransfer(tx: Transaction, wallet: Wallet?) {
         guard let w = wallet else { return }
-        tx.senderAddress = w.originAddress
+        tx.senderAddress = w.address
 
         transferAmoutLabel.text = tx.amountTextString
 

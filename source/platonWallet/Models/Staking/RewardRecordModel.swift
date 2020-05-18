@@ -49,7 +49,7 @@ class RewardRecordModel: Decodable {
 
 extension RewardModel {
     var avatarImage: UIImage? {
-        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.originAddress.lowercased() == address.lowercased() }.first
+        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.address.lowercased() == address.lowercased() }.first
         guard let wallet = localWallet else {
             return UIImage(named: "walletAvatar_1")
         }
@@ -57,12 +57,12 @@ extension RewardModel {
     }
 
     var walletName: String? {
-        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.originAddress.lowercased() == address.lowercased() }.first
+        let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.address.lowercased() == address.lowercased() }.first
         return (localWallet?.name ?? "--")
     }
 
     var walletAddress: String? {
-        return "(" + address.addressForDisplayLeading4Trailing8() + ")"
+        return "(" + address.addressForDisplayLeading4Trailing8Bech32() + ")"
     }
 
     var amountForDisplay: String? {

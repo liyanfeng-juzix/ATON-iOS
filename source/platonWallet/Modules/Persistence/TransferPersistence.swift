@@ -79,7 +79,7 @@ class TransferPersistence {
 
         let wallets = AssetVCSharedData.sharedData.walletList.filterClassicWallet
         let addresses = wallets.map { w -> String in
-            return w.originAddress.lowercased()
+            return w.address.lowercased()
         }
         let predicate = NSPredicate(format: "chainId == %@", SettingService.shareInstance.currentNodeChainId)
         let r = realm.objects(Transaction.self).filter(predicate).sorted(byKeyPath: "createTime", ascending: false)
