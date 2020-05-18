@@ -209,7 +209,12 @@ extension Keystore: Codable {
             self.crypto = try altValues.decode(Keystore.Crypto.self, forKey: .crypto)
         }
         version = try values.decode(Int.self, forKey: .version)
-        address = try! values.decodeIfPresent(Keystore.Address.self, forKey: .address) ?? Keystore.Address(mainnet: "", testnet: "")
+
+        if let address = try? values.decode(String.self, forKey: .address) {
+            self.address = Keystore.Address(address: address, mainnetHrp: AppConfig.Hrp.LAT, testnetHrp: AppConfig.Hrp.LAX)
+        } else {
+            self.address = try! values.decodeIfPresent(Keystore.Address.self, forKey: .address) ?? Keystore.Address(mainnet: "", testnet: "")
+        }
         publicKey = try values.decodeIfPresent(String.self, forKey: .publicKey)
     }
 
