@@ -150,7 +150,7 @@ class ImportObservedWalletViewController: BaseImportWalletViewController {
 
     func checkKeyboard() {
         if let pasteBoardString = UIPasteboard.general.string {
-            if pasteBoardString.is40ByteAddress() {
+            if WalletUtil.isValidAddress(pasteBoardString) {
                 self.pasteButton.setTitleColor(UIColor(rgb: 0x105CFE), for: .normal)
             } else {
                 self.pasteButton.setTitleColor(UIColor(rgb: 0xB6BBD0), for: .normal)
@@ -227,7 +227,7 @@ class ImportObservedWalletViewController: BaseImportWalletViewController {
 
     @objc func onPaste() {
         if let pasteBoardString = UIPasteboard.general.string {
-            if pasteBoardString.is40ByteAddress() {
+            if WalletUtil.isValidAddress(pasteBoardString) {
                 self.addresstextView.text = pasteBoardString
                 self.checkCanEableButton()
             }

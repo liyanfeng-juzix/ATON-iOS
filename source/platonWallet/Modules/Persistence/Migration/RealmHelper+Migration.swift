@@ -22,7 +22,7 @@ extension RealmHelper {
         migration.enumerateObjects(ofType: Wallet.className()) { (oldObject, newObject) in
             guard oldObject != nil, newObject != nil else { return }
             guard let address = oldObject!["address"] as? String, (
-                    address.isValidAddress()
+                    WalletUtil.isValidAddress(address)
             ) else { return }
             newObject!["address"] = Keystore.Address(address: oldObject!["address"] as? String, mainnetHrp: AppConfig.Hrp.LAT, testnetHrp: AppConfig.Hrp.LAX)
         }

@@ -77,7 +77,7 @@ extension Transaction {
                 if let addressBookWallet = AddressBookService.service.getAll().first(where: { $0.walletAddress?.lowercased() == to?.lowercased() }) {
                     return addressBookWallet.walletName
                 } else {
-                    return to?.addressForDisplayShort()
+                    return to?.addressForDisplayShortBech32()
                 }
             }
             return wallet.name
@@ -85,14 +85,14 @@ extension Transaction {
             if let nName = nodeName, nName.count > 0 {
                 return nName
             }
-            return to?.addressForDisplayShort()
+            return to?.addressForDisplayShortBech32()
         }
     }
 
     var fromNameString: String? {
         let localWallet = (AssetVCSharedData.sharedData.walletList as! [Wallet]).filter { $0.address.lowercased() == from?.lowercased() }.first
         guard let wallet = localWallet else {
-            return from?.addressForDisplayShort()
+            return from?.addressForDisplayShortBech32()
         }
         return wallet.name
     }
@@ -326,6 +326,6 @@ extension Transaction {
     }
 
     var recordWalletAddress: String? {
-        return from != nil ? "(" + (from?.addressForDisplayShort() ?? "--") + ")" : ""
+        return from != nil ? "(" + (from?.addressForDisplayShortBech32() ?? "--") + ")" : ""
     }
 }
