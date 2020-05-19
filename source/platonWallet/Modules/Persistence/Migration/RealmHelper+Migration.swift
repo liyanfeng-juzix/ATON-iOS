@@ -24,7 +24,7 @@ extension RealmHelper {
             guard let address = oldObject!["address"] as? String, (
                     WalletUtil.isValidAddress(address)
             ) else { return }
-            newObject!["address"] = Keystore.Address(address: oldObject!["address"] as? String, mainnetHrp: AppConfig.Hrp.LAT, testnetHrp: AppConfig.Hrp.LAX)
+            newObject!["address"] = Keystore.Address(address: (oldObject!["address"] as? String)!, mainnetHrp: AppConfig.Hrp.LAT, testnetHrp: AppConfig.Hrp.LAX)
         }
         #endif
     }
