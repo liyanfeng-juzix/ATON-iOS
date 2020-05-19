@@ -102,6 +102,18 @@ class SettingService {
         standard.synchronize()
     }
 
+    func setCurrentNodeHrp(nodeChain: NodeChain) {
+        let standard = UserDefaults.standard
+        guard
+            let hrp = standard.string(forKey: LocalKeys.SelectedHrpKey),
+            hrp != nodeChain.hrp
+            else {
+                return
+        }
+        standard.set(nodeChain.hrp, forKey: LocalKeys.SelectedHrpKey)
+        standard.synchronize()
+    }
+
     var thresholdValue: BigUInt {
         get {
             if let value = UserDefaults.standard.object(forKey: LocalKeys.ReminderThresholdValue) as? String {
